@@ -1,0 +1,23 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: php:8-fpm
+    container_name: fee3
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    ports:
+      - 8001:8001
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_KEY=your_application_key
+      - DB_CONNECTION=pgsql
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=fee3
+      - DB_USERNAME=syncwords_user
+      - DB_PASSWORD=password
