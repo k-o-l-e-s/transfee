@@ -7,6 +7,7 @@ use App\Enums\EuCountryEnum;
 use App\Rules\TransactionValidationRule;
 use App\Services\Bins\BinlistService;
 use App\Services\Exchanges\ApilayerExchangeService;
+use App\Traits\ClearableAttributes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
@@ -14,7 +15,7 @@ use App\Http\Requests\TransactionRequest;
 
 class Transaction extends Model
 {
-    use HasFactory;
+    use HasFactory, ClearableAttributes;
     protected $guarded = [];
 
     public static $rules = [

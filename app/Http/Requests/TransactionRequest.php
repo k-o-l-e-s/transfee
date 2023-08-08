@@ -34,8 +34,6 @@ class TransactionRequest extends FormRequest
     {
         // The request has already been validated at this point
         $transaction = Transaction::create($request->all());
-
-        // ... rest of your code
     }
 
 }

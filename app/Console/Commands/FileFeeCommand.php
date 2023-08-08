@@ -30,12 +30,9 @@ class FileFeeCommand extends Command
 
         foreach ($lines as $line) {
             $transactionData = json_decode($line, true);
-
             $transaction = new Transaction($transactionData);
-
             $transaction->calculateFee();
 
-//            $this->info($transaction->bin." ".$transaction->bin_country." ".$transaction->fee." ".$transaction->amount);
             $this->info($transaction->fee);
         }
     }
