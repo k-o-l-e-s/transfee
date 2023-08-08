@@ -34,18 +34,18 @@ class Transaction extends Model
         return $this->eu;
     }
 
-    public function getCountryByBin()
+    private function getCountryByBin()
     {
         $binService = app(BinlistService::class);
-        return $this->bin_country = $binService->getCountryCode($this->bin);
+        $this->bin_country = $binService->getCountryCode($this->bin);
     }
 
     public function calculateFee()
     {
 
+        $exchangeName = config('exchange.default');
         $exchangeRateService = app(ApilayerExchangeService::class);
         $this->amountEur = $exchangeRateService->calculateAmountInEuro($this->amount, $this->currency);
-
         $this->feeRate = $this->isEu() ? 0.01 : 0.02;
         $this->fee = $this->amountEur * $this->feeRate;
         $this->fee = sprintf("%01.2f",$this->fee);

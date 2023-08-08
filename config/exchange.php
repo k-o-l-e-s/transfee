@@ -9,5 +9,9 @@ return [
             'root_url' => env('API_EXCHANGERATES_URL'),
             'auth_key' => env('API_EXCHANGERATES_KEY'),
         ],
+        'Apilayer2' => [
+            'root_url' => env('API_EXCHANGERATES_URL'),
+            'auth_key' => env('API_EXCHANGERATES_KEY'),
+        ],
     ],
 ];

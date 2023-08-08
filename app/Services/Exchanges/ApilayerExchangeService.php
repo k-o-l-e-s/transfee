@@ -11,10 +11,10 @@ class ApilayerExchangeService implements ExchangeInterface
     protected $apiKey;
     protected $rates;
 
-    public function __construct($config = [])
+    public function __construct()
     {
-        $this->apiUrl = env('API_EXCHANGERATES_URL') or die('Undefined env variable: API_EXCHANGERATES_URL');
-        $this->apiKey = env('API_EXCHANGERATES_KEY') or die('Undefined env variable: API_EXCHANGERATES_KEY');
+        $this->apiUrl = config('exchange.data_providers.'.config('exchange.default').'.root_url');
+        $this->apiKey = config('exchange.data_providers.'.config('exchange.default').'.auth_key');
     }
 
     private function fetchExchangeRates()
@@ -26,19 +26,25 @@ class ApilayerExchangeService implements ExchangeInterface
                 ])->get($this->apiUrl . 'exchangerates_data/latest');
 
                 if (!$response->successful()) {
-                    throw new \Exception('Failed to fetch exchange rates from the API.');
+                    Log::error('Failed to fetch exchange rates from the API.', [
+                        'status' => $response->status(),
+                        'response' => $response->json(),
+                    ]);
+                } else {
+                    $this->rates = $response->json('rates');
+                    if (empty($this->rates)) {
+                        Log::error('Exchange rates data is missing.', [
+                            'status' => $response->status(),
+                            'response' => $response->json(),
+                        ]);
+                    } else {
+                        return $this->rates;
+                    }
                 }
-
-                $this->rates = $response->json('rates');
-
-                if (empty($this->rates)) {
-                    throw new \Exception('Exchange rates data is missing.');
-                }
-
-                return $this->rates;
+                return [];
             });
         } catch (RequestException $exception) {
-            throw new \Exception('Exchange rates API connection error.');
+            return [];
         }
     }
 
@@ -49,6 +55,7 @@ class ApilayerExchangeService implements ExchangeInterface
         $rates = $this->fetchExchangeRates();
 
         if (!isset($rates[$currency])) {
+            Log::error('Exchange rate for currency ['.$currency.'] is not available.');
             throw new \Exception("Exchange rate for currency '{$currency}' is not available.");
         }
 
